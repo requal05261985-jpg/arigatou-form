@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ありがとうフォーム</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; background: #f5f5f3; min-height: 100vh; padding: 2rem 1rem; color: #1a1a1a; }
+    .container { max-width: 560px; margin: 0 auto; }
+    .header { text-align: center; margin-bottom: 2rem; }
+    .heart-icon { width: 48px; height: 48px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; }
+    .header h1 { font-size: 22px; font-weight: 500; color: #1a1a1a; margin-bottom: 12px; }
+    .desc { font-size: 14px; color: #555; line-height: 1.8; text-align: left; background: #efefed; border-radius: 8px; padding: 14px 16px; margin-bottom: 1.5rem; }
+    .desc p { margin-bottom: 10px; }
+    .desc ul { padding-left: 4px; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .desc ul li::before { content: "・"; }
+    .card { background: #fff; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 13px; font-weight: 500; color: #555; }
+    .field label span.req { color: #D85A30; margin-left: 2px; }
+    .field .hint { font-size: 12px; color: #888; margin-top: 2px; }
+    input[type="text"], select, textarea { width: 100%; font-family: inherit; font-size: 14px; padding: 10px 12px; border: 0.5px solid rgba(0,0,0,0.15); border-radius: 8px; background: #fff; color: #1a1a1a; outline: none; line-height: 1.7; }
+    input[type="text"]:focus, select:focus, textarea:focus { border-color: #5DCAA5; box-shadow: 0 0 0 3px rgba(93,202,165,0.15); }
+    input[type="text"]::placeholder, textarea::placeholder { color: #aaa; }
+    select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888780' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; background-color: #fff; padding-right: 36px; cursor: pointer; }
+    select:disabled { opacity: 0.5; cursor: not-allowed; }
+    textarea { min-height: 120px; resize: vertical; }
+    .char-count { font-size: 12px; color: #aaa; text-align: right; }
+    .divider { border: none; border-top: 0.5px solid rgba(0,0,0,0.1); margin: 0; }
+    .section-label { font-size: 12px; font-weight: 500; color: #aaa; letter-spacing: 0.05em; }
+    .submit-btn { width: 100%; padding: 12px; background: #1D9E75; color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .submit-btn:hover { background: #0F6E56; }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { background: #e0e0e0; color: #aaa; cursor: not-allowed; transform: none; }
+    .error-msg { font-size: 13px; color: #D85A30; text-align: center; }
+    .success-card { text-align: center; padding: 3rem 1.5rem; display: none; flex-direction: column; align-items: center; gap: 1rem; }
+    .success-card.show { display: flex; }
+    .success-icon { width: 56px; height: 56px; border-radius: 50%; background: #E1F5EE; display: flex; align-items: center; justify-content: center; }
+    .success-card h2 { font-size: 20px; font-weight: 500; }
+    .success-card p { font-size: 14px; color: #555; line-height: 1.7; }
+    .reset-btn { margin-top: 8px; padding: 8px 20px; background: transparent; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 8px; font-family: inherit; font-size: 14px; color: #555; cursor: pointer; }
+    .reset-btn:hover { background: #f5f5f3; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="heart-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="48" height="48">
+          <path d="M24 40s-16-9.6-16-20a10 10 0 0 1 16-8 10 10 0 0 1 16 8c0 10.4-16 20-16 20z" fill="#5DCAA5" opacity="0.3"/>
+          <path d="M24 40s-16-9.6-16-20a10 10 0 0 1 16-8 10 10 0 0 1 16 8c0 10.4-16 20-16 20z" stroke="#1D9E75" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h1>ありがとうフォーム</h1>
+    </div>
+
+    <div class="desc">
+      <p>社内で「嬉しかったこと」「助かったこと」を気軽に伝えるためのフォームです。<br>ちょっとしたことでも大丈夫ですのでぜひ送ってみてください。<br>内容は匿名でご本人のみに共有いたします！</p>
+      <p style="font-size:13px; color:#888; margin-bottom:4px;">例：</p>
+      <ul style="font-size:13px; color:#888;">
+        <li>助けられた</li>
+        <li>対応が丁寧だった</li>
+        <li>気付いてもらって嬉しかった</li>
+        <li>何気ない一言</li>
+      </ul>
+    </div>
+
+    <div class="card" id="form-card">
+      <p class="section-label">送信者</p>
+      <div class="field">
+        <label>あなたの名前<span class="req">*</span></label>
+        <p class="hint">（フルネーム、間に空白なし）</p>
+        <input type="text" id="sender-name" placeholder="例：山田太郎" maxlength="50" />
+      </div>
+
+      <hr class="divider" />
+      <p class="section-label">感謝を送る相手</p>
+
+      <div class="field">
+        <label>所属部署<span class="req">*</span></label>
+        <select id="dept-select">
+          <option value="">部署を選択してください</option>
+          <option value="osaka">大阪鑑定士</option>
+          <option value="kobe">神戸鑑定士</option>
+          <option value="nagoya">名古屋鑑定士</option>
+          <option value="fukuoka">福岡鑑定士</option>
+          <option value="yokohama">横浜鑑定士</option>
+          <option value="gotanda">五反田鑑定士</option>
+          <option value="okayama">岡山鑑定士</option>
+          <option value="nakin">内勤</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>お名前<span class="req">*</span></label>
+        <select id="member-select" disabled>
+          <option value="">先に部署を選択してください</option>
+        </select>
+      </div>
+
+      <hr class="divider" />
+      <p class="section-label">メッセージ</p>
+
+      <div class="field">
+        <label>感謝のメッセージ<span class="req">*</span></label>
+        <textarea id="message" maxlength="300" placeholder="感謝の気持ちを自由に書いてください..."></textarea>
+        <div class="char-count"><span id="char-count">0</span> / 300</div>
+      </div>
+
+      <div id="error-msg" class="error-msg" style="display:none;"></div>
+
+      <button class="submit-btn" id="submit-btn" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+        <span id="btn-label">送信する</span>
+      </button>
+    </div>
+
+    <div class="card success-card" id="success-card">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2>送信しました！</h2>
+      <p id="success-msg"></p>
+      <button class="reset-btn" id="reset-btn">もう一件送る</button>
+    </div>
+  </div>
+
+  <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbx50m7bRx70EXBWCcD0MfH_x2Q5V8Kf3-2c_atyZeSy6LPfxgFG8zOruHnN-WSAAlw8zA/exec";
+
+    const members = {
+      osaka: ["梶山裕介","椎崇将","山﨑慶介","大野龍汰","川口端午","中尾夏輝","竹村慶佑","髙須大輝","髙林陸","濵口心","山本真司","渡邊瑞輝","山内懸太","吉山陽太","木林憧一","西端良祐","齊藤亮吉","笠原淳史","村松蒼太","川村真輝","倉田圭甫","菊池健太","近藤崇","横尾のぞみ","乾浩之","山﨑大基","松田翔也"],
+      kobe: ["小代貴也","小泉正悟","福堂航平","市川陽祐","衣笠和輝"],
+      nagoya: ["柴田憲吾","柴田昇輝","漆畑颯汰","石田亮平","中江貴斗","中村一騎","大杉直","橋本響","大澤柊太","丸井健太郎","水野雄太","浅野貴大","藤原桃子","禰宜田孝政","矢野来騎","大西智仁","児玉祥永"],
+      fukuoka: ["松本裕輔","布谷尚希","水野大地","青山雄司","上瀧翔貴","室屋光輝","大財拓也","大門斗夢","安田翔太","花城音弥","築城英博"],
+      yokohama: ["宇野賢人","塚田崚","岡部海星","吉岡颯吾","伊藤友人","小林拓海","山本翔"],
+      gotanda: ["杉本泰貴","宮脇翔大","小松弦志","加藤寛","木幡柊斗","金木剛","山田卓則","木村龍人","門野良樹","佐藤拓海","富永鈴羅","斉藤舜斗","天野暢"],
+      okayama: ["高原輝正","小辻耕平","矢野大樹","藤原友香"],
+      nakin: ["今西雄紀","松岡優季","薦田雅大","横田拓広","宇野賢人","高原輝正","松本裕輔","柴田憲吾","梶山裕介","浅沼大希","西村なずな","日置晴香","藤原優香","森本真梨恵","長谷川裕香","今原絵理","中川彩花","小野千紘","岩崎由佳","右田穂ノ香","奥田佳奈","上嶋爽歩","福岡環","沖山真由美","岩田裕依","達磨香奈","岩田菜々","井上沙織","大森明日華","小西奈津美","水野冴香","登内愛深","別府史崇","松原賢佑","猿賀恵","筒井裕亮","青木隆英","松永香朱美","木村沙瑚","山下亮一","國光翔胡","原慶伍","中尾真優","中井瑠香","原隆功","大村貴和","上田綾花"],
+    };
+    const deptLabels = { osaka:"大阪鑑定士", kobe:"神戸鑑定士", nagoya:"名古屋鑑定士", fukuoka:"福岡鑑定士", yokohama:"横浜鑑定士", gotanda:"五反田鑑定士", okayama:"岡山鑑定士", nakin:"内勤" };
+
+    const deptSelect = document.getElementById("dept-select");
+    const memberSelect = document.getElementById("member-select");
+    const senderName = document.getElementById("sender-name");
+    const message = document.getElementById("message");
+    const charCount = document.getElementById("char-count");
+    const submitBtn = document.getElementById("submit-btn");
+    const btnLabel = document.getElementById("btn-label");
+    const errorMsg = document.getElementById("error-msg");
+
+    deptSelect.addEventListener("change", () => {
+      const dept = deptSelect.value;
+      memberSelect.innerHTML = "";
+      if (!dept) {
+        memberSelect.disabled = true;
+        memberSelect.innerHTML = '<option value="">先に部署を選択してください</option>';
+      } else {
+        memberSelect.disabled = false;
+        const ph = document.createElement("option");
+        ph.value = ""; ph.textContent = "名前を選択してください";
+        memberSelect.appendChild(ph);
+        members[dept].forEach(name => {
+          const opt = document.createElement("option");
+          opt.value = name; opt.textContent = name;
+          memberSelect.appendChild(opt);
+        });
+      }
+      checkForm();
+    });
+
+    memberSelect.addEventListener("change", checkForm);
+    senderName.addEventListener("input", checkForm);
+    message.addEventListener("input", () => {
+      charCount.textContent = message.value.length;
+      checkForm();
+    });
+
+    function checkForm() {
+      submitBtn.disabled = !(senderName.value.trim() && deptSelect.value && memberSelect.value && message.value.trim());
+    }
+
+    submitBtn.addEventListener("click", async () => {
+      submitBtn.disabled = true;
+      btnLabel.textContent = "送信中...";
+      errorMsg.style.display = "none";
+
+      const payload = {
+        sender: senderName.value.trim(),
+        dept: deptLabels[deptSelect.value],
+        member: memberSelect.value,
+        message: message.value.trim()
+      };
+
+      try {
+        await fetch(GAS_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        document.getElementById("success-msg").textContent =
+          `${payload.sender} さんから、${payload.dept}の ${payload.member} さんへメッセージを送りました。`;
+        document.getElementById("form-card").style.display = "none";
+        document.getElementById("success-card").classList.add("show");
+      } catch (e) {
+        errorMsg.textContent = "送信に失敗しました。時間をおいて再度お試しください。";
+        errorMsg.style.display = "block";
+        submitBtn.disabled = false;
+        btnLabel.textContent = "送信する";
+      }
+    });
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      senderName.value = "";
+      deptSelect.value = "";
+      memberSelect.disabled = true;
+      memberSelect.innerHTML = '<option value="">先に部署を選択してください</option>';
+      message.value = "";
+      charCount.textContent = "0";
+      submitBtn.disabled = true;
+      btnLabel.textContent = "送信する";
+      errorMsg.style.display = "none";
+      document.getElementById("form-card").style.display = "";
+      document.getElementById("success-card").classList.remove("show");
+    });
+  </script>
+</body>
+</html>
